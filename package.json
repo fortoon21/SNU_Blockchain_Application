@@ -1,0 +1,22 @@
+{
+  "name": "lever-ez",
+  "devDependencies": {
+    "@chainlink/contracts": "^0.8.0",
+    "@chainlink/contracts-ccip": "^0.7.3",
+    "@chainlink/env-enc": "^1.0.5",
+    "@nomicfoundation/hardhat-ethers": "^3.0.5",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "ethers": "^6.8.1",
+    "hardhat": "^2.14.1",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-tracer": "^2.7.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2",
+    "xdeployer": "^2.2.0"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "typechain": "typechain --target ethers-v6 'artifacts/contracts/**/!(*.dbg).json' --out-dir typechain-types/contracts"
+  }
+}
