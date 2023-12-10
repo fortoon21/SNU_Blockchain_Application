@@ -1,6 +1,7 @@
 // pages/index.js
 import { formatUnits } from "ethers";
 import { promises as fs } from "fs";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 const DEMO_LINK = "https://www.desmos.com/calculator/fpshn0nmvn";
@@ -159,18 +160,21 @@ export default function Home({ fromAAVE }: { fromAAVE: string }) {
   const R_s2 = stableRateSlope2;
 
   return (
-    <div className="m-20">
+    <div className="m-20 ">
       <h1>Utilization Ratio(DAI) - AAVE v3 in Sephoria</h1>
+      <Image width={600} height={300} src="/utilization.png" />
 
-      <div>R_0 : {R_0} </div>
-      <div>U_opt : {U_opt} </div>
-      <div>R_s1 : {R_s1} </div>
-      <div>R_s2 : {R_s2} </div>
-      <div>U_t : {(U_t * 100).toFixed(2)} % </div>
-      <div>R_t : {(R_t * 100).toFixed(2)} % </div>
+      <div className="mt-4">
+        <div>R_0 : {R_0} </div>
+        <div>U_opt : {U_opt} </div>
+        <div>R_s1 : {R_s1} </div>
+        <div>R_s2 : {R_s2} </div>
+        <div>U_t : {(U_t * 100).toFixed(2)} % </div>
+        <div>R_t : {(R_t * 100).toFixed(2)} % </div>
+      </div>
 
       <div>
-        <iframe src={`${DEMO_LINK}?embed`} width="500" height="500"></iframe>
+        <iframe src={`${DEMO_LINK}?embed`} width="400" height="400"></iframe>
       </div>
 
       <button
