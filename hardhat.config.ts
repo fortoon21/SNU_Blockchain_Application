@@ -3,7 +3,7 @@ dotenvenc.config();
 import "xdeployer";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-// import "./tasks";
+import "./tasks";
 import "hardhat-tracer";
 import "hardhat-contract-sizer";
 
@@ -13,6 +13,7 @@ const POLYGON_MUMBAI_RPC_URL = process.env.POLYGON_MUMBAI_RPC_URL;
 const OPTIMISM_GOERLI_RPC_URL = process.env.OPTIMISM_GOERLI_RPC_URL;
 const ARBITRUM_TESTNET_RPC_URL = process.env.ARBITRUM_TESTNET_RPC_URL;
 const AVALANCHE_FUJI_RPC_URL = process.env.AVALANCHE_FUJI_RPC_URL;
+console.log("ETHEREUM_SEPOLIA_RPC_URL", ETHEREUM_SEPOLIA_RPC_URL);
 
 const config: HardhatUserConfig = {
   solidity: {

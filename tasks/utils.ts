@@ -10,9 +10,11 @@ import {
 import {
   AbiCoder,
   ParamType,
+  formatUnits,
   getBigInt,
   getCreate2Address,
   keccak256,
+  parseUnits,
 } from "ethers";
 import {
   Create2DeployerLocal__factory,
@@ -42,6 +44,7 @@ export const getProviderRpcUrl = (network: string) => {
     default:
       throw new Error("Unknown network: " + network);
   }
+  console.log("rpcUrl", rpcUrl);
 
   if (!rpcUrl)
     throw new Error(
@@ -270,6 +273,24 @@ export function calculateAaveInterestRate(
   currentStableBorrowRate: bigint;
   currentVariableBorrowRate: bigint;
 } {
+  console.log("totalStableDebt", formatUnits(totalStableDebt, 18));
+  console.log("totalVariableDebt", totalVariableDebt);
+  console.log("availableLiquidity", availableLiquidity);
+  console.log("optimalUtilization", optimalUtilization);
+  console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
+  console.log(
+    "maxExcessStableToTotalDebtRatio",
+    maxExcessStableToTotalDebtRatio
+  );
+  console.log("baseVariableBorrowRate", baseVariableBorrowRate);
+  console.log("stableRateSlope1", stableRateSlope1);
+  console.log("stableRateSlope2", stableRateSlope2);
+  console.log("variableRateSlope1", variableRateSlope1);
+  console.log("variableRateSlope2", variableRateSlope2);
+  console.log("stableBaseBorrowRate", stableBaseBorrowRate);
+  console.log("stableRateExcessOffset", stableRateExcessOffset);
+  console.log("reserveFactor", reserveFactor);
+  console.log("unbacked", unbacked);
   const totalBorrow = totalStableDebt + totalVariableDebt;
 
   const totalLiquidity = availableLiquidity + totalBorrow;
@@ -285,6 +306,8 @@ export function calculateAaveInterestRate(
     borrowUsageRatio = rayDiv(totalBorrow, totalLiquidity);
     supplyUsageRatio = rayDiv(totalBorrow, totalLiquidity + unbacked);
   }
+  console.log("stableToTotalDebtRatio", stableToTotalDebtRatio);
+  console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
 
   if (borrowUsageRatio > optimalUtilization) {
     const excessBorrowUsageRatio = rayDiv(

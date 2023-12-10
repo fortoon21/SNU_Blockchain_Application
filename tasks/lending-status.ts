@@ -312,6 +312,10 @@ task("lending-status", "Gets the balance of tokens for provided address")
         getBigInt(element.reserveFactor),
         getBigInt(element.unbacked)
       );
+      if (name === "DAI") {
+        console.log("name", name);
+        console.log("interestRate", interestRate);
+      }
 
       aaveV3Status[name]["totalVariableDebt"] = totalVariableDebt.toString();
       aaveV3Status[name]["totalStableDebt"] = totalStableDebt.toString();
@@ -325,6 +329,7 @@ task("lending-status", "Gets the balance of tokens for provided address")
         interestRate.currentVariableBorrowRate.toString();
     });
 
+    console.log("!!!!!!!!!!!!!!!!v3 status!!!!!!!!!!!!!!!!!!");
     console.log(aaveV3Status);
 
     const aaveV3IncentiveStatus: Record<string, APR> = {};
@@ -393,7 +398,8 @@ task("lending-status", "Gets the balance of tokens for provided address")
       );
       aaveV3IncentiveStatus[name]["vTotalAPR"] = vTotalAPR.toString();
     });
-    console.log(aaveV3IncentiveStatus);
+    // console.log("!!!!!!!!!!!!!!!!v3 incentive status!!!!!!!!!!!!!!!!!!");
+    // console.log(aaveV3IncentiveStatus);
 
     const accountData = await aaveV3.getUserAccountData(wallet.address);
     const aaveV3AccountNetStatus: Record<string, string> = {};
@@ -411,7 +417,8 @@ task("lending-status", "Gets the balance of tokens for provided address")
     aaveV3AccountNetStatus["baseDecimals"] =
       aaveV3Data[1].networkBaseTokenPriceDecimals.toString();
 
-    console.log(aaveV3AccountNetStatus);
+    // console.log("!!!!!!!!!!!!!!!!v3 account net status!!!!!!!!!!!!!!!!!!");
+    // console.log(aaveV3AccountNetStatus);
 
     const aaveFloatStatus: Record<string, Record<string, string | number>> = {};
     for (const name of Object.keys(aaveV3Status)) {
@@ -512,11 +519,13 @@ task("lending-status", "Gets the balance of tokens for provided address")
         aaveFloatStatus["user"]["totalCollateralUSD"]) *
       100;
 
-    console.log(aaveFloatStatus);
+    // console.log("!!!!!!!!!!!!!!!!float status!!!!!!!!!!!!!!!!!!");
+    // console.log(aaveFloatStatus);
 
     const balances = await walletStatus(signer, taskArguments.blockchain);
 
-    console.log(balances);
+    // console.log("!!!!!!!!!!!!!!!!balances!!!!!!!!!!!!!!!!!!");
+    // console.log(balances);
 
     let leverage = 2;
     let inputAmount = 0;
@@ -595,7 +604,8 @@ task("lending-status", "Gets the balance of tokens for provided address")
       borrowAPR: aaveFloatStatus[token]["variableBorrowAPR"].toString(),
     };
 
-    console.log(supplyProps);
+    // console.log("!!!!!!!!!!!!!!!!supply props!!!!!!!!!!!!!!!!!!");
+    // console.log(supplyProps);
 
     // const compV2Status: Record<string, Record<string, string>> = {};
 
