@@ -3,7 +3,7 @@ dotenvenc.config();
 import "xdeployer";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "./tasks";
+// import "./tasks";
 import "hardhat-tracer";
 import "hardhat-contract-sizer";
 

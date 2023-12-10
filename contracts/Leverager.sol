@@ -111,9 +111,13 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
 
     receive() external payable { }
 
-    function addDstChainPropagator(uint64 destChainSelector, address _propagator) external onlyOwner {
-        dstToPropagator[destChainSelector]=_propagator;
+    function addDstChainPropagators(uint64[] memory destChainSelectors, address[] memory _propagators) external onlyOwner {
+        if (destChainSelectors.length != _propagators.length) revert LengthMismatch();
+        for (uint256 i; i<destChainSelectors.length; i++){
+            dstToPropagator[destChainSelectors[i]]=_propagators[i];
+        }
     }
+
 
     /// @inheritdoc ILeverager
     function supply(
@@ -276,9 +280,6 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
             _decreasePosition(cache);
         }
 
-                event Leverage(address indexed user, address indexed token, uint256 amount, uint256 ltv);
-    event Deleverage(address indexed user, address indexed token, uint256 amount, uint256 ltv);
-    emit Close(msg.sender, uint256 srcChainId, uint256 dstChainId, inputParams.amount, uint256 ltv);
     }
 
     /**
@@ -504,7 +505,7 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
     }
 
 
-
+    /// decrease position function
     function _decreasePosition(Cache memory cache ) internal {
         (cache.borrowAssetUnderlying, cache.borrowToken, cache.flashloanAmount, cache.data) =
             abi.decode(cache.data, (address, address, uint256, bytes));
@@ -562,6 +563,7 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
         }
     }
 
+    /// leverage function
     function _leverage(LeverageParams memory levParams, uint256 totalBorrow) internal {
         bool isSupplyETH = levParams.supplyAssetUnderlying.isETH();
         bool isBorrowETH = levParams.borrowAssetUnderlying.isETH();
@@ -619,6 +621,7 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
         }
     }
 
+    /// deleverage function with target ltv calculated value
     function _deleverage(LeverageParams memory levParams, uint256 totalWithdraw) internal {
         bool isSupplyETH = levParams.supplyAssetUnderlying.isETH();
         bool isBorrowETH = levParams.borrowAssetUnderlying.isETH();
@@ -671,7 +674,29 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
         }
     }
 
+    /// add destination chain propagators to check the validity of the calls
+    function _addDstChainPropagator(uint64 destChainSelector, address _propagator) internal {
+        dstToPropagator[destChainSelector]=_propagator;
+    }
 
+
+    function _sweep(address token) internal returns(uint256 amount) {
+        if (token.isETH()) {
+            token = WETH9;
+            amount = IWETH(WETH9).balanceOf(address(this));
+            if (amount > 0) {
+                IWETH(WETH9).withdraw(amount);
+                payable(msg.sender).call{ value: amount }("");
+            }
+        } else {
+            amount = token.balanceOf(address(this));
+            if (amount > 0) {
+                token.safeTransfer(msg.sender, amount);
+            }
+        }
+    }
+
+    // CCIP Receive from other chains close the position based on the data
     function _ccipReceive(
         Client.Any2EVMMessage memory message
     ) internal override {
@@ -692,21 +717,4 @@ contract Leverager is IFlashLoanReceiver, ReentrancyLock, ILeverager, Ownable, C
 
         _decreasePosition(cache);
     }
-
-    function _sweep(address token) internal returns(uint256 amount) {
-        if (token.isETH()) {
-            token = WETH9;
-            amount = IWETH(WETH9).balanceOf(address(this));
-            if (amount > 0) {
-                IWETH(WETH9).withdraw(amount);
-                payable(msg.sender).call{ value: amount }("");
-            }
-        } else {
-            amount = token.balanceOf(address(this));
-            if (amount > 0) {
-                token.safeTransfer(msg.sender, amount);
-            }
-        }
-    }
-
 }
