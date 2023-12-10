@@ -1,5 +1,6 @@
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
+import { writeFileSync } from "fs";
 import { AddressLike, ethers } from "ethers";
 import {
   calculateAaveInterestRate,
@@ -295,23 +296,30 @@ task("lending-status", "Gets the balance of tokens for provided address")
         )
       );
 
-      const interestRate = calculateAaveInterestRate(
-        totalStableDebt,
-        totalVariableDebt,
-        getBigInt(element.availableLiquidity),
-        getBigInt(element.optimalUsageRatio),
-        getBigInt(aaveV3Status[name].optimalStableToTotalDebtRatio as string),
-        getBigInt(aaveV3Status[name].maxExcessStableToTotalDebtRatio as string),
-        getBigInt(element.baseVariableBorrowRate),
-        getBigInt(element.stableRateSlope1),
-        getBigInt(element.stableRateSlope2),
-        getBigInt(element.variableRateSlope1),
-        getBigInt(element.variableRateSlope2),
-        getBigInt(element.baseStableBorrowRate),
-        getBigInt(aaveV3Status[name].stableRateExcessOffset as string),
-        getBigInt(element.reserveFactor),
-        getBigInt(element.unbacked)
-      );
+      const interestRate = calculateAaveInterestRate({
+        totalStableDebt: totalStableDebt,
+        totalVariableDebt: totalVariableDebt,
+        availableLiquidity: getBigInt(element.availableLiquidity),
+        optimalUtilization: getBigInt(element.optimalUsageRatio),
+        optimalStableToTotalDebtRatio: getBigInt(
+          aaveV3Status[name].optimalStableToTotalDebtRatio as string
+        ),
+        maxExcessStableToTotalDebtRatio: getBigInt(
+          aaveV3Status[name].maxExcessStableToTotalDebtRatio as string
+        ),
+        baseVariableBorrowRate: getBigInt(element.baseVariableBorrowRate),
+        stableRateSlope1: getBigInt(element.stableRateSlope1),
+        stableRateSlope2: getBigInt(element.stableRateSlope2),
+        variableRateSlope1: getBigInt(element.variableRateSlope1),
+        variableRateSlope2: getBigInt(element.variableRateSlope2),
+        stableBaseBorrowRate: getBigInt(element.baseStableBorrowRate),
+        stableRateExcessOffset: getBigInt(
+          aaveV3Status[name].stableRateExcessOffset as string
+        ),
+        reserveFactor: getBigInt(element.reserveFactor),
+        unbacked: getBigInt(element.unbacked),
+        isDai: name === "DAI",
+      });
       if (name === "DAI") {
         console.log("name", name);
         console.log("interestRate", interestRate);
@@ -330,7 +338,7 @@ task("lending-status", "Gets the balance of tokens for provided address")
     });
 
     console.log("!!!!!!!!!!!!!!!!v3 status!!!!!!!!!!!!!!!!!!");
-    console.log(aaveV3Status);
+    console.log(aaveV3Status["DAI"]);
 
     const aaveV3IncentiveStatus: Record<string, APR> = {};
 

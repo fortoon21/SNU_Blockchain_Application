@@ -251,46 +251,46 @@ export function calculateAvailableBorrows(
   return availableBorrowBase;
 }
 
-export function calculateAaveInterestRate(
-  totalStableDebt: bigint,
-  totalVariableDebt: bigint,
-  availableLiquidity: bigint,
-  optimalUtilization: bigint,
-  optimalStableToTotalDebtRatio: bigint,
-  maxExcessStableToTotalDebtRatio: bigint,
-  baseVariableBorrowRate: bigint,
-  stableRateSlope1: bigint,
-  stableRateSlope2: bigint,
-  variableRateSlope1: bigint,
-  variableRateSlope2: bigint,
-  stableBaseBorrowRate: bigint,
-  stableRateExcessOffset: bigint,
-  reserveFactor: bigint,
-  unbacked: bigint
-): {
+export function calculateAaveInterestRate({
+  totalStableDebt,
+  totalVariableDebt,
+  availableLiquidity,
+  optimalUtilization,
+  optimalStableToTotalDebtRatio,
+  maxExcessStableToTotalDebtRatio,
+  baseVariableBorrowRate,
+  stableRateSlope1,
+  stableRateSlope2,
+  variableRateSlope1,
+  variableRateSlope2,
+  stableBaseBorrowRate,
+  stableRateExcessOffset,
+  reserveFactor,
+  unbacked,
+  isDai,
+}: {
+  totalStableDebt: bigint;
+  totalVariableDebt: bigint;
+  availableLiquidity: bigint;
+  optimalUtilization: bigint;
+  optimalStableToTotalDebtRatio: bigint;
+  maxExcessStableToTotalDebtRatio: bigint;
+  baseVariableBorrowRate: bigint;
+  stableRateSlope1: bigint;
+  stableRateSlope2: bigint;
+  variableRateSlope1: bigint;
+  variableRateSlope2: bigint;
+  stableBaseBorrowRate: bigint;
+  stableRateExcessOffset: bigint;
+  reserveFactor: bigint;
+  unbacked: bigint;
+  isDai: boolean;
+}): {
   borrowUsageRatio: bigint;
   currentLiquidityRate: bigint;
   currentStableBorrowRate: bigint;
   currentVariableBorrowRate: bigint;
 } {
-  console.log("totalStableDebt", formatUnits(totalStableDebt, 18));
-  console.log("totalVariableDebt", totalVariableDebt);
-  console.log("availableLiquidity", availableLiquidity);
-  console.log("optimalUtilization", optimalUtilization);
-  console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
-  console.log(
-    "maxExcessStableToTotalDebtRatio",
-    maxExcessStableToTotalDebtRatio
-  );
-  console.log("baseVariableBorrowRate", baseVariableBorrowRate);
-  console.log("stableRateSlope1", stableRateSlope1);
-  console.log("stableRateSlope2", stableRateSlope2);
-  console.log("variableRateSlope1", variableRateSlope1);
-  console.log("variableRateSlope2", variableRateSlope2);
-  console.log("stableBaseBorrowRate", stableBaseBorrowRate);
-  console.log("stableRateExcessOffset", stableRateExcessOffset);
-  console.log("reserveFactor", reserveFactor);
-  console.log("unbacked", unbacked);
   const totalBorrow = totalStableDebt + totalVariableDebt;
 
   const totalLiquidity = availableLiquidity + totalBorrow;
@@ -306,8 +306,6 @@ export function calculateAaveInterestRate(
     borrowUsageRatio = rayDiv(totalBorrow, totalLiquidity);
     supplyUsageRatio = rayDiv(totalBorrow, totalLiquidity + unbacked);
   }
-  console.log("stableToTotalDebtRatio", stableToTotalDebtRatio);
-  console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
 
   if (borrowUsageRatio > optimalUtilization) {
     const excessBorrowUsageRatio = rayDiv(
@@ -352,6 +350,30 @@ export function calculateAaveInterestRate(
     ),
     getBigInt(PERCENTAGE_FACTOR) - reserveFactor
   );
+
+  if (isDai) {
+    console.log("totalStableDebt", formatUnits(totalStableDebt, 18));
+    console.log("totalVariableDebt", totalVariableDebt);
+    console.log("availableLiquidity", availableLiquidity);
+    console.log("optimalUtilization", optimalUtilization);
+    console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
+    console.log(
+      "maxExcessStableToTotalDebtRatio",
+      maxExcessStableToTotalDebtRatio
+    );
+    console.log("baseVariableBorrowRate", baseVariableBorrowRate);
+    console.log("stableRateSlope1", stableRateSlope1);
+    console.log("stableRateSlope2", stableRateSlope2);
+    console.log("variableRateSlope1", variableRateSlope1);
+    console.log("variableRateSlope2", variableRateSlope2);
+    console.log("stableBaseBorrowRate", stableBaseBorrowRate);
+    console.log("stableRateExcessOffset", stableRateExcessOffset);
+    console.log("reserveFactor", reserveFactor);
+    console.log("unbacked", unbacked);
+
+    console.log("stableToTotalDebtRatio", stableToTotalDebtRatio);
+    console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
+  }
 
   return {
     borrowUsageRatio,
