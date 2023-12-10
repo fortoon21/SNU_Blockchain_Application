@@ -312,7 +312,7 @@ task("lending-status", "Gets the balance of tokens for provided address")
         stableRateSlope2: getBigInt(element.stableRateSlope2),
         variableRateSlope1: getBigInt(element.variableRateSlope1),
         variableRateSlope2: getBigInt(element.variableRateSlope2),
-        stableBaseBorrowRate: getBigInt(element.baseStableBorrowRate),
+        baseStableBorrowRate: getBigInt(element.baseStableBorrowRate),
         stableRateExcessOffset: getBigInt(
           aaveV3Status[name].stableRateExcessOffset as string
         ),

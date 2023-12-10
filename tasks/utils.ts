@@ -263,7 +263,7 @@ export function calculateAaveInterestRate({
   stableRateSlope2,
   variableRateSlope1,
   variableRateSlope2,
-  stableBaseBorrowRate,
+  baseStableBorrowRate,
   stableRateExcessOffset,
   reserveFactor,
   unbacked,
@@ -280,7 +280,7 @@ export function calculateAaveInterestRate({
   stableRateSlope2: bigint;
   variableRateSlope1: bigint;
   variableRateSlope2: bigint;
-  stableBaseBorrowRate: bigint;
+  baseStableBorrowRate: bigint;
   stableRateExcessOffset: bigint;
   reserveFactor: bigint;
   unbacked: bigint;
@@ -299,7 +299,7 @@ export function calculateAaveInterestRate({
   let supplyUsageRatio = getBigInt(0);
 
   let currentVariableBorrowRate = baseVariableBorrowRate;
-  let currentStableBorrowRate = stableBaseBorrowRate;
+  let currentStableBorrowRate = baseStableBorrowRate;
   let stableToTotalDebtRatio = getBigInt(0);
   if (totalBorrow !== getBigInt(0)) {
     stableToTotalDebtRatio = rayDiv(totalStableDebt, totalBorrow);
@@ -366,13 +366,33 @@ export function calculateAaveInterestRate({
     console.log("stableRateSlope2", stableRateSlope2);
     console.log("variableRateSlope1", variableRateSlope1);
     console.log("variableRateSlope2", variableRateSlope2);
-    console.log("stableBaseBorrowRate", stableBaseBorrowRate);
+    console.log("baseStableBorrowRate", baseStableBorrowRate);
     console.log("stableRateExcessOffset", stableRateExcessOffset);
     console.log("reserveFactor", reserveFactor);
     console.log("unbacked", unbacked);
 
     console.log("stableToTotalDebtRatio", stableToTotalDebtRatio);
     console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
+
+    const data = {
+      totalStableDebt: String(totalStableDebt),
+      totalVariableDebt: String(totalVariableDebt),
+      availableLiquidity: String(availableLiquidity),
+      optimalUtilization: String(optimalUtilization),
+      optimalStableToTotalDebtRatio: String(optimalStableToTotalDebtRatio),
+      maxExcessStableToTotalDebtRatio: String(maxExcessStableToTotalDebtRatio),
+      baseVariableBorrowRate: String(baseVariableBorrowRate),
+      stableRateSlope1: String(stableRateSlope1),
+      stableRateSlope2: String(stableRateSlope2),
+      variableRateSlope1: String(variableRateSlope1),
+      variableRateSlope2: String(variableRateSlope2),
+      baseStableBorrowRate: String(baseStableBorrowRate),
+      stableRateExcessOffset: String(stableRateExcessOffset),
+      reserveFactor: String(reserveFactor),
+      unbacked: String(unbacked),
+      stableToTotalDebtRatio: String(stableToTotalDebtRatio),
+    };
+    writeFileSync("interface/output.json", JSON.stringify(data));
   }
 
   return {
