@@ -1,7 +1,9 @@
 // pages/index.js
 import { formatUnits } from "ethers";
 import { promises as fs } from "fs";
-import Link from "next/link";
+import { useRouter } from "next/router";
+
+const DEMO_LINK = "https://www.desmos.com/calculator/fpshn0nmvn";
 
 function calculateAaveInterestRate({
   totalStableDebt,
@@ -106,6 +108,7 @@ const aaveToInputData = (data: AaveData) => {
 };
 
 export default function Home({ fromAAVE }: { fromAAVE: string }) {
+  const router = useRouter();
   const d: AaveData = JSON.parse(fromAAVE);
 
   const aaveData = aaveToInputData(d);
@@ -155,8 +158,6 @@ export default function Home({ fromAAVE }: { fromAAVE: string }) {
   const R_s1 = stableRateSlope1;
   const R_s2 = stableRateSlope2;
 
-  // const interestRate = calculateAaveInterestRate(aaveData);
-
   return (
     <div className="m-20">
       <h1>Utilization Ratio(DAI) - AAVE v3 in Sephoria</h1>
@@ -169,15 +170,15 @@ export default function Home({ fromAAVE }: { fromAAVE: string }) {
       <div>R_t : {(R_t * 100).toFixed(2)} % </div>
 
       <div>
-        <iframe
-          src="https://www.desmos.com/calculator/fpshn0nmvn?embed"
-          width="500"
-          height="500"
-        ></iframe>
+        <iframe src={`${DEMO_LINK}?embed`} width="500" height="500"></iframe>
       </div>
-      <Link href="https://www.desmos.com/calculator/fpshn0nmvn?lang=ko">
-        link
-      </Link>
+
+      <button
+        onClick={() => router.push(DEMO_LINK)}
+        className="bg-blue-700 px-4 py-2 rounded-md mt-2"
+      >
+        Link
+      </button>
     </div>
   );
 }
