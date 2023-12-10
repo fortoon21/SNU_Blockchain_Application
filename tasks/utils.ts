@@ -1,3 +1,4 @@
+import { writeFileSync } from "fs";
 import {
   PayFeesIn,
   routerConfig,
@@ -352,28 +353,6 @@ export function calculateAaveInterestRate({
   );
 
   if (isDai) {
-    console.log("totalStableDebt", formatUnits(totalStableDebt, 18));
-    console.log("totalVariableDebt", totalVariableDebt);
-    console.log("availableLiquidity", availableLiquidity);
-    console.log("optimalUtilization", optimalUtilization);
-    console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
-    console.log(
-      "maxExcessStableToTotalDebtRatio",
-      maxExcessStableToTotalDebtRatio
-    );
-    console.log("baseVariableBorrowRate", baseVariableBorrowRate);
-    console.log("stableRateSlope1", stableRateSlope1);
-    console.log("stableRateSlope2", stableRateSlope2);
-    console.log("variableRateSlope1", variableRateSlope1);
-    console.log("variableRateSlope2", variableRateSlope2);
-    console.log("baseStableBorrowRate", baseStableBorrowRate);
-    console.log("stableRateExcessOffset", stableRateExcessOffset);
-    console.log("reserveFactor", reserveFactor);
-    console.log("unbacked", unbacked);
-
-    console.log("stableToTotalDebtRatio", stableToTotalDebtRatio);
-    console.log("optimalStableToTotalDebtRatio", optimalStableToTotalDebtRatio);
-
     const data = {
       totalStableDebt: String(totalStableDebt),
       totalVariableDebt: String(totalVariableDebt),
